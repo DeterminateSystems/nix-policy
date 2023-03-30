@@ -45,23 +45,26 @@
           entrypoint = "verify/allow";
         };
 
-        run =
-          let
-            runWasm = { name, binary, invoke }: pkgs.nuenv.mkScript {
-              inherit name;
-              script = ''
-                (
-                  ${pkgs.wasmtime}/bin/wasmtime ${binary}
-                    --invoke ${invoke}
-                )
-              '';
-            };
-          in
-          runWasm {
-            name = "run";
-            binary = "${self.packages.${system}.default}/bin/policy.wasm";
-            invoke = "_start";
-          };
+        opa-eval = pkgs.rustPlatform.buildRustPackage {
+          name = "opa-eval";
+          src = ./rust-opa-wasm;
+          cargoLock.lockFile = ./rust-opa-wasm/Cargo.lock;
+          buildFeatures = [ "cli" ];
+          doCheck = false;
+        };
+
+        evaluate = pkgs.nuenv.mkScript {
+          name = "evaluate";
+          script = ''
+            # An OPA evaluator
+            def main [
+              --entrypoint: string, # The output entrypoint
+            ] {
+              # TODO: make this multiple lines without losing output
+              ${self.packages.${system}.opa-eval}/bin/opa-eval --module ${self.packages.${system}.default}/lib/policy.wasm --entrypoint $entrypoint
+            }
+          '';
+        };
       });
 
       lib = {
