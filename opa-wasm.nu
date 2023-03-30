@@ -1,23 +1,33 @@
-def h [msg: string] { $"(ansi blue)($msg)(ansi reset)" }
+def bl [msg: string] { $"(ansi blue)($msg)(ansi reset)" }
+def gr [msg: string] { $"(ansi light_green)($msg)(ansi reset)" }
 
-let outBin = $"($env.out)/bin"
+let out = $env.out
+let outLib = $"($out)/lib"
 
+let tarball = "bundle.tar.gz"
+let wasmOutput = "policy.wasm"
 let policy = $env.policy
 let relativePolicyPath = ($policy | parse $"($env.NIX_STORE)/{__hash}-{policy}" | get policy.0)
 let policyName = ($relativePolicyPath | parse "{policy}.rego" | get policy.0)
 let entrypoint = $env.entrypoint
 
-log $"Building Wasm policy (h $relativePolicyPath) with entrypoint (h $entrypoint)"
+log $"Building Wasm policy (bl $relativePolicyPath) with entrypoint (gr $entrypoint)"
 
-(
-  opa build
-    --target wasm
-    --entrypoint $entrypoint
-    $policy
-)
+let opaCmd = $"opa build --target wasm --entrypoint ($entrypoint) ($policy)"
 
-tar -xzf bundle.tar.gz
+log $"Running (gr $opaCmd)"
 
-mkdir $outBin
+nu --commands $opaCmd
 
-mv policy.wasm $outBin
+log $"Untarring ($tarball)"
+
+log "Tar output:"
+tar xvzf $tarball
+
+log $"Making output directory (bl $out)"
+
+mkdir $outLib
+
+log $"Copying (bl $wasmOutput) to (gr $outLib)"
+
+mv $wasmOutput $outLib

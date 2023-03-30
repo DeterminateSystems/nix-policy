@@ -45,12 +45,23 @@
           entrypoint = "verify/allow";
         };
 
-        run = pkgs.nuenv.mkScript {
-          name = "run";
-          script = ''
-            ${pkgs.wasmtime}/bin/wasmtime ${self.packages.${system}.default}/bin/policy.wasm
-          '';
-        };
+        run =
+          let
+            runWasm = { name, binary, invoke }: pkgs.nuenv.mkScript {
+              inherit name;
+              script = ''
+                (
+                  ${pkgs.wasmtime}/bin/wasmtime ${binary}
+                    --invoke ${invoke}
+                )
+              '';
+            };
+          in
+          runWasm {
+            name = "run";
+            binary = "${self.packages.${system}.default}/bin/policy.wasm";
+            invoke = "_start";
+          };
       });
 
       lib = {
