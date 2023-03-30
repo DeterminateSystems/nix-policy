@@ -30,16 +30,26 @@
       devShells = forAllSystems ({ pkgs, system }: {
         default = pkgs.mkShell {
           name = "nix-policy";
-          packages = with pkgs; [ open-policy-agent ];
+          packages = with pkgs; [
+            open-policy-agent
+            wasmtime
+          ];
         };
       });
 
-      packages = forAllSystems ({ pkgs, ... }: {
+      packages = forAllSystems ({ pkgs, system }: {
         default = pkgs.mkOpaWasm {
           name = "example-policy";
           src = ./.;
           policy = ./verify.rego;
           entrypoint = "verify/allow";
+        };
+
+        run = pkgs.nuenv.mkScript {
+          name = "run";
+          script = ''
+            ${pkgs.wasmtime}/bin/wasmtime ${self.packages.${system}.default}/bin/policy.wasm
+          '';
         };
       });
 
