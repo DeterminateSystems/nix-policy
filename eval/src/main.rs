@@ -6,7 +6,7 @@ use wasmtime::{Config, Engine, Module, Store};
 
 /// A policy evaluator wrapping the OPA policy %rego% with entrypoint %entrypoint%
 #[derive(Parser)]
-#[command(author, version, about, long_about = None)]
+#[command(author, about, long_about = None)]
 struct Cli {
     /// Policy data object
     #[arg(short, long)]

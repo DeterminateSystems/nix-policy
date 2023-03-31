@@ -46,12 +46,21 @@
         };
       });
 
-      packages = forAllSystems ({ pkgs, system }: {
-        default = pkgs.mkPolicyEvaluator {
+      packages = forAllSystems ({ pkgs, system }: rec {
+        default = rbac;
+
+        rbac = pkgs.mkPolicyEvaluator {
           name = "rbac-verify";
           src = ./.;
           policy = ./examples/rbac.rego;
           entrypoint = "rbac/allow";
+        };
+
+        tfstate = pkgs.mkPolicyEvaluator {
+          name = "tfstate-verify";
+          src = ./.;
+          policy = ./examples/tfstate.rego;
+          entrypoint = "tfstate/allow";
         };
       });
 

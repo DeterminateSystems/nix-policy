@@ -7,7 +7,8 @@ An experiment using [Nix] with [Open Policy Agent][opa] (OPA).
 This project uses [Nix] to create CLI tools that wrap [Rego] policies for [Open Policy Agent][opa]:
 
 - The OPA CLI tool generates a [WebAssembly] (Wasm) binary for the specified Rego policy file and [entrypoint][bundle]
-- A [Rust CLI](./eval) wraps the generated Wasm and provides the user interface
+- A [Rust CLI](./eval) wraps the generated Wasm and provides the final user interface.
+  That CLI is itself a thin wrapper around the [`rust-opa-wasm`][lib] library from the good folks at [Matrix].
 
 You can run the default example for the [`rbac.rego`](./examples/rbac.rego):
 
@@ -73,6 +74,8 @@ nix build
 ```
 
 [bundle]: https://www.openpolicyagent.org/docs/latest/management-bundles/#bundle-file-format
+[lib]: https://github.com/matrix-org/rust-opa-wasm
+[matrix]: https://github.com/matrix-org
 [nix]: https://zero-to-nix.com
 [opa]: https://open-policy-agent.org
 [rego]: https://www.openpolicyagent.org/docs/latest/policy-language
