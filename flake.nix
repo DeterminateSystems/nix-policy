@@ -53,6 +53,14 @@
             cargo-watch
           ];
         };
+
+        ci = pkgs.mkShell {
+          name = "nix-policy-ci";
+          packages = with pkgs; [
+            cachix
+            direvn
+          ];
+        };
       });
 
       packages = forAllSystems ({ pkgs, system }: rec {
