@@ -48,10 +48,10 @@
 
       packages = forAllSystems ({ pkgs, system }: {
         default = pkgs.mkPolicyEvaluator {
-          name = "opa-verify";
+          name = "rbac-verify";
           src = ./.;
-          policy = ./verify.rego;
-          entrypoint = "verify/allow";
+          policy = ./examples/rbac.rego;
+          entrypoint = "rbac/allow";
         };
       });
 

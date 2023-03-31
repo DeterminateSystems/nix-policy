@@ -1,9 +1,9 @@
-package verify
+package rbac
 
 default allow := false
 
 allow = true {
     expected := data.expected
-    msg := input.message
+    msg := input.password
     msg == expected
 }
