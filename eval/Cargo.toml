@@ -1,0 +1,11 @@
+[package]
+name = "eval"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+anyhow = "1.0.70"
+opa-wasm = { git = "https://github.com/matrix-org/rust-opa-wasm.git", rev = "f2a72769f9082dd9bc007247bb9bc4546ae3f7d3" }
+serde_json = "1.0.95"
+tokio = { version = "1.27.0", features = ["fs", "macros", "rt-multi-thread"] }
+wasmtime = "6.0.0"

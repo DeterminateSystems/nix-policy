@@ -45,24 +45,18 @@
           entrypoint = "verify/allow";
         };
 
-        opa-eval = pkgs.rustPlatform.buildRustPackage {
-          name = "opa-eval";
-          src = ./rust-opa-wasm;
-          cargoLock.lockFile = ./rust-opa-wasm/Cargo.lock;
-          buildFeatures = [ "cli" ];
-          doCheck = false;
-        };
-
-        evaluate = pkgs.nuenv.mkScript {
-          name = "evaluate";
-          script = ''
-            # An OPA evaluator
-            def main [
-              --entrypoint: string, # The output entrypoint
-            ] {
-              # TODO: make this multiple lines without losing output
-              ${self.packages.${system}.opa-eval}/bin/opa-eval --module ${self.packages.${system}.default}/lib/policy.wasm --entrypoint $entrypoint
-            }
+        eval = pkgs.rustPlatform.buildRustPackage {
+          name = "eval";
+          src = ./eval;
+          cargoLock = {
+            lockFile = ./eval/Cargo.lock;
+            outputHashes = {
+              "opa-wasm-0.1.0" = "sha256-ZasUQHHBLnGtGB+pkN/jjgXL0iVeCPA/q1Dxl5QAhQ0=";
+            };
+          };
+          prePatch = ''
+            substituteInPlace src/main.rs \
+              --replace policy.wasm ${self.packages.${system}.default}/lib/policy.wasm
           '';
         };
       });
