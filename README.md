@@ -37,27 +37,39 @@ This bit of Nix would enable you to generate your own evaluator CLI tool from `t
     nix-policy.url = "github:DeterminateSystems/nix-policy";
   };
 
-  outputs = { self, nix-policy }: let
-    systems = [
-      "aarch64-linux"
-      "x86_64-linux"
-      "aarch64-darwin"
-      "x86_64-darwin"
-    ];
-    forAllSystems = f: nixpkgs.lib.genAttrs systems (system: f {
-      pkgs = import nixpkgs { inherit system; overlays = [ nix-policy-overlays.opa-wasm ]; }
-    });
-  in {
-    packages = forAllSystems ({ pkgs }: {
-      default = pkgs.mkPolicyEvaluator {
-        name = "evaluate-rbac";
-        src = ./.;
-        policy = ./policies/terraform.rego;
-        entrypoint = "terraform/allow";
-      };
-    });
-  };
+  outputs = { self, nix-policy }:
+    let
+      systems = [
+        "aarch64-linux"
+        "x86_64-linux"
+        "aarch64-darwin"
+        "x86_64-darwin"
+      ];
+      forAllSystems = f: nixpkgs.lib.genAttrs systems (system: f {
+        pkgs = import nixpkgs { inherit system; overlays = [ nix-policy-overlays.opa-wasm ]; };
+      });
+    in
+    {
+      packages = forAllSystems ({ pkgs }: {
+        default = pkgs.mkPolicyEvaluator {
+          name = "evaluate-tf-state";
+          src = ./.;
+          policy = ./policies/terraform.rego;
+          entrypoint = "terraform/allow";
+        };
+      });
+    };
 }
+```
+
+Then you can build and run:
+
+```shell
+nix build
+
+./result/bin/evaluate-tf-state \
+  --input $(cat ./terraform.tfstate) \
+  --data $(cat ./policy-data.json)
 ```
 
 [bundle]: https://www.openpolicyagent.org/docs/latest/management-bundles/#bundle-file-format
