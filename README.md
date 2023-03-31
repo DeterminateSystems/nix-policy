@@ -10,5 +10,15 @@ ls result/bin
 # policy.wasm
 ```
 
+```nix
+{
+  inputs = {
+    nix-policy.url = "github:DeterminateSystems/nix-policy";
+  };
+
+  outputs = { self, nix-policy }: {};
+}
+```
+
 [nix]: https://zero-to-nix.com
 [opa]: https://open-policy-agent.org

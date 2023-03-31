@@ -2,7 +2,8 @@ package verify
 
 default allow := false
 
-allow {
+allow = true {
+    expected := data.expected
     msg := input.message
-    msg == "hello"
+    msg == expected
 }
