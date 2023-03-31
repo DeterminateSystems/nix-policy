@@ -94,7 +94,19 @@
             def main [
               path: path = "./flake.lock", # The flake.lock file to check (default: "./flake.lock")
             ] {
-              ${self.packages.${system}.check-flake}/bin/flake-checker --input (open $path)
+              let res = (${self.packages.${system}.check-flake}/bin/flake-checker --input (open $path))
+              let deny = ($res | from json | get 0.result.deny)
+
+              let numProblems = ($deny | length)
+              if $numProblems == 0 {
+                $"(ansi green)SUCCESS(ansi reset)"
+              } else {
+                $"(ansi red)ERROR(ansi reset): (ansi blue)($numProblems)(ansi reset) problems were encountered"
+
+                for issue in $deny {
+                  {problem: $issue.problem, severity: $issue.severity}
+                }
+              }
             }
           '';
         };

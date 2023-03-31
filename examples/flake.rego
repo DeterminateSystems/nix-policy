@@ -13,4 +13,4 @@ deny[format(rego.metadata.rule())] {
 
 has_key(obj, k) { _ = obj[k] }
 
-format(meta) := {"severity": meta.custom.severity, "reason": meta.description}
+format(meta) := {"problem": meta.description, "severity": meta.custom.severity}
