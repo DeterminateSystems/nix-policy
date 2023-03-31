@@ -58,7 +58,7 @@
           name = "nix-policy-ci";
           packages = with pkgs; [
             cachix
-            direvn
+            direnv
           ];
         };
       });
