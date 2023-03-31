@@ -13,7 +13,13 @@
     };
   };
 
-  outputs = { self, nixpkgs, nuenv, rust-overlay }:
+  outputs =
+    { self
+    , nixpkgs
+    , nuenv
+    , rust-overlay
+    }:
+
     let
       systems = [
         "aarch64-linux"
@@ -22,16 +28,17 @@
         "x86_64-darwin"
       ];
 
+      overlays = [
+        rust-overlay.overlays.rust-overlay # Provide rust-bin attribute
+        self.overlays.rust-toolchain # Provide a rustToolchain attribute
+        nuenv.overlays.nuenv # Provide the nuenv attribute (for nuenv.mkDerivation)
+        self.overlays.opa-eval # Provide the mkPolicyEvaluator attribute
+      ];
+
       forAllSystems = f: nixpkgs.lib.genAttrs systems (system: f {
         inherit system;
         pkgs = import nixpkgs {
-          overlays = [
-            rust-overlay.overlays.rust-overlay
-            self.overlays.provide-rust
-            nuenv.overlays.nuenv
-            self.overlays.opa-wasm
-          ];
-          inherit system;
+          inherit overlays system;
         };
       });
     in
@@ -41,7 +48,9 @@
           name = "nix-policy";
           packages = with pkgs; [
             open-policy-agent
-            wasmtime
+            rustToolchain
+            cargo-edit
+            cargo-watch
           ];
         };
       });
@@ -65,53 +74,15 @@
       });
 
       lib = {
-        mkPolicyEvaluator =
-          pkgs:
-
-          { name, src, policy, entrypoint }:
-
-          let
-            policyName = builtins.baseNameOf policy;
-
-            policyDrv = pkgs.nuenv.mkDerivation {
-              name = "${name}-policy";
-              inherit entrypoint policy src;
-              packages = with pkgs; [ gnutar gzip open-policy-agent ];
-              build = builtins.readFile ./opa-wasm.nu;
-            };
-
-            rustPlatform = pkgs.makeRustPlatform {
-              rustc = pkgs.rustToolchain;
-              cargo = pkgs.rustToolchain;
-            };
-          in
-          rustPlatform.buildRustPackage {
-            inherit name;
-            src = ./eval;
-            cargoLock = {
-              lockFile = ./eval/Cargo.lock;
-              outputHashes = {
-                "opa-wasm-0.1.0" = "sha256-ZasUQHHBLnGtGB+pkN/jjgXL0iVeCPA/q1Dxl5QAhQ0=";
-              };
-            };
-            prePatch = ''
-              substituteInPlace src/main.rs \
-                --replace %policy% ${policyDrv}/lib/policy.wasm \
-                --replace %rego% ${policyName} \
-                --replace %entrypoint% ${entrypoint}
-            '';
-            postInstall = ''
-              mv $out/bin/eval $out/bin/${name}
-            '';
-          };
+        mkPolicyEvaluator = pkgs: import ./nix/evaluator.nix { inherit pkgs; };
       };
 
       overlays = {
-        provide-rust = final: prev: {
+        rust-toolchain = final: prev: rec {
           rustToolchain = prev.rust-bin.fromRustupToolchainFile ./eval/rust-toolchain.toml;
         };
 
-        opa-wasm = final: prev: {
+        opa-eval = final: prev: {
           mkPolicyEvaluator = self.lib.mkPolicyEvaluator prev;
         };
       };

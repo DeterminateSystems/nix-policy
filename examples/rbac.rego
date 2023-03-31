@@ -4,6 +4,6 @@ default allow := false
 
 allow = true {
     expected := data.expected
-    msg := input.password
-    msg == expected
+    password := input.password
+    password == expected
 }
