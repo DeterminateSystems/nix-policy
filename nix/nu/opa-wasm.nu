@@ -19,6 +19,9 @@ log $"Running (gr $opaCmd)"
 
 nu --commands $opaCmd
 
+log $"Running OPA tests on ($tarball)"
+opa run $tarball
+
 log $"Untarring ($tarball)"
 
 log "Tar output:"

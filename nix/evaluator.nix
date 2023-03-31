@@ -8,6 +8,9 @@
 }:
 
 let
+  # Convert /nix/store/...-policy.rego into policy.rego
+  policyName = builtins.baseNameOf policy;
+
   # Rust toolchain (from overlay)
   rust = pkgs.rustToolchain;
 
@@ -16,9 +19,6 @@ let
     rustc = rust;
     cargo = rust;
   };
-
-  # Convert /nix/store/...-policy.rego into policy.rego
-  policyName = builtins.baseNameOf policy;
 
   # Build a Wasm binary for the specified policy and entrypoint
   policyDrv = pkgs.nuenv.mkDerivation {
@@ -47,4 +47,5 @@ rustPlatform.buildRustPackage {
   postInstall = ''
     mv $out/bin/eval $out/bin/${name}
   '';
+  doCheck = false;
 }

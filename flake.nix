@@ -62,14 +62,14 @@
           name = "rbac-verify";
           src = ./.;
           policy = ./examples/rbac.rego;
-          entrypoint = "rbac/allow";
+          entrypoint = "rbac";
         };
 
         tfstate = pkgs.mkPolicyEvaluator {
           name = "tfstate-verify";
           src = ./.;
           policy = ./examples/tfstate.rego;
-          entrypoint = "tfstate/allow";
+          entrypoint = "tfstate";
         };
       });
 

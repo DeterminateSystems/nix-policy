@@ -27,6 +27,22 @@ nix build --print-build-logs
 # [{"result":false}]
 ```
 
+That CLI wraps this policy:
+
+```rego
+package rbac
+
+default allow := false
+
+allow = true {
+    expected := data.expected
+    password := input.password
+    password == expected
+}
+```
+
+The magic here is the generated CLI automatically reads from the Rego-policy-turned-into-Wasm stored in the Nix store, which means that you don't need to specify an entrypoint or a path to the Wasm file on the CLI; that's handled at the Nix level.
+
 ## Create your own evaluator
 
 This bit of Nix would enable you to generate your own evaluator CLI tool from `terraform.rego` and with the entrypoint `terraform/allow`.
