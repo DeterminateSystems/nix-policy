@@ -84,7 +84,7 @@
           script = ''
             # Checks that a flake.lock file conforms to Determinate Systems' strict policies
             def main [
-              path: path = "./flake.lock", # The flake.lock file to check
+              path: path = "./flake.lock", # The flake.lock file to check (default: "./flake.lock")
             ] {
               ${self.packages.${system}.check-flake}/bin/flake-checker --input (open $path)
             }
