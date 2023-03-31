@@ -62,6 +62,8 @@
           { name, src, policy, entrypoint }:
 
           let
+            policyName = builtins.baseNameOf policy;
+
             policyDrv = pkgs.nuenv.mkDerivation {
               name = "${name}-policy";
               inherit entrypoint policy src;
@@ -86,7 +88,7 @@
             prePatch = ''
               substituteInPlace src/main.rs \
                 --replace %policy% ${policyDrv}/lib/policy.wasm \
-                --replace %rego% ${policy} \
+                --replace %rego% ${policyName} \
                 --replace %entrypoint% ${entrypoint}
             '';
             postInstall = ''

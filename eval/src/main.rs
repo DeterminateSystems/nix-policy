@@ -46,11 +46,9 @@ async fn main() -> Result<()> {
         json!({})
     };
 
-    // Evaluate the policy
+    // Evaluate the policy and output the result as JSON
     let value: serde_json::Value = policy.evaluate(&mut store, entrypoint, &input).await?;
     println!("{}", value);
-    //let eval: EvalResult = serde_json::from_value(value)?;
-    //println!("result: {}", eval.result);
 
     Ok(())
 }
