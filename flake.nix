@@ -71,6 +71,25 @@
           policy = ./examples/tfstate.rego;
           entrypoint = "tfstate";
         };
+
+        check-flake = pkgs.mkPolicyEvaluator {
+          name = "flake-checker";
+          src = ./.;
+          policy = ./examples/flake.rego;
+          entrypoint = "flake";
+        };
+
+        flake-checker = pkgs.nuenv.mkScript {
+          name = "flake-checker";
+          script = ''
+            # Checks that a flake.lock file conforms to Determinate Systems' strict policies
+            def main [
+              path: path = "./flake.lock", # The flake.lock file to check
+            ] {
+              ${self.packages.${system}.check-flake}/bin/flake-checker --input (open $path)
+            }
+          '';
+        };
       });
 
       lib = {
