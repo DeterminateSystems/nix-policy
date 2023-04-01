@@ -41,7 +41,7 @@ allow = true {
 }
 ```
 
-The magic here is the generated CLI automatically reads from the Rego-policy-turned-into-Wasm stored in the Nix store, which means that you don't need to specify an entrypoint or a path to the Wasm file on the CLI; that's handled at the Nix level.
+The magic here is that the generated CLI automatically reads from the Rego-policy-turned-into-Wasm stored in the Nix store, which means that you don't need to specify an entrypoint or a path to the Wasm file on the CLI; that's handled at the Nix level.
 
 ## Create your own evaluator
 
