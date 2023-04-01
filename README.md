@@ -45,7 +45,19 @@ The magic here is the generated CLI automatically reads from the Rego-policy-tur
 
 ## Create your own evaluator
 
-This bit of Nix would enable you to generate your own evaluator CLI tool from `terraform.rego` and with the entrypoint `terraform/allow`.
+You can create your own using the [`mkPolicyEvaluator`](./nix/evaluator.nix) function provided by this flake.
+Here's an example:
+
+```nix
+mkPolicyEvaluator {
+  name = "evaluate-tf-state"; # The name of the CLI
+  src = ./.; # The local workspace
+  policy = ./policies/terraform.rego; # The Rego policy that the CLI wraps
+  entrypoint = "terraform/allow"; # The entrypoint for evaluation
+}
+```
+
+Here's that function used in the context of a full flake:
 
 ```nix
 {
