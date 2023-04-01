@@ -47,5 +47,5 @@ rustPlatform.buildRustPackage {
   postInstall = ''
     mv $out/bin/eval $out/bin/${name}
   '';
-  doCheck = false;
+  doCheck = false; # No tests yet
 }

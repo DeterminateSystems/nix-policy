@@ -620,6 +620,7 @@ dependencies = [
  "opa-wasm",
  "serde",
  "serde_json",
+ "thiserror",
  "tokio",
  "wasmtime",
 ]
