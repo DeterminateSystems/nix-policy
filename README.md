@@ -97,8 +97,8 @@ Then you can build and run:
 nix build
 
 ./result/bin/evaluate-tf-state \
-  --input $(cat ./terraform.tfstate) \
-  --data $(cat ./policy-data.json)
+  --input-pth terraform.tfstate \
+  --data-path policy-data.json
 ```
 
 [bundle]: https://www.openpolicyagent.org/docs/latest/management-bundles/#bundle-file-format
