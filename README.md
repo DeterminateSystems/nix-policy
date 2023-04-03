@@ -97,7 +97,7 @@ Then you can build and run:
 nix build
 
 ./result/bin/evaluate-tf-state \
-  --input-pth terraform.tfstate \
+  --input-path terraform.tfstate \
   --data-path policy-data.json
 ```
 
