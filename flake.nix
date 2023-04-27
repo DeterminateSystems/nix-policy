@@ -30,9 +30,8 @@
 
       overlays = [
         rust-overlay.overlays.rust-overlay # Provide rust-bin attribute
-        self.overlays.rust-toolchain # Provide a rustToolchain attribute
+        self.overlays.default # Provide rustToolchain and mkPolicyEvaluator attributes
         nuenv.overlays.nuenv # Provide the nuenv attribute (for nuenv.mkDerivation)
-        self.overlays.opa-eval # Provide the mkPolicyEvaluator attribute
       ];
 
       forAllSystems = f: nixpkgs.lib.genAttrs systems (system: f {
@@ -64,16 +63,16 @@
       });
 
       packages = forAllSystems ({ pkgs, system }: rec {
-        default = rbac;
+        default = rbac-eval;
 
-        rbac = pkgs.mkPolicyEvaluator {
+        rbac-eval = pkgs.mkPolicyEvaluator {
           name = "rbac-eval";
           src = ./.;
           policy = ./examples/rbac.rego;
           entrypoint = "rbac";
         };
 
-        tfstate = pkgs.mkPolicyEvaluator {
+        tfstate-eval = pkgs.mkPolicyEvaluator {
           name = "tfstate-eval";
           src = ./.;
           policy = ./examples/tfstate.rego;
@@ -81,12 +80,13 @@
         };
 
         check-flake = pkgs.mkPolicyEvaluator {
-          name = "flake-checker";
+          name = "check-flake";
           src = ./.;
           policy = ./examples/flake.rego;
           entrypoint = "flake";
         };
 
+        # A Nushell script wrapping the check-flake package
         flake-checker = pkgs.nuenv.mkScript {
           name = "flake-checker";
           script = ''
@@ -113,16 +113,14 @@
       });
 
       lib = {
+        # The OPA Wasm -> Rust CLI tool builder
         mkPolicyEvaluator = pkgs: import ./nix/evaluator.nix { inherit pkgs; };
       };
 
       overlays = {
-        rust-toolchain = final: prev: rec {
+        default = final: prev: rec {
           rustToolchain = prev.rust-bin.fromRustupToolchainFile ./eval/rust-toolchain.toml;
-        };
-
-        opa-eval = final: prev: {
-          mkPolicyEvaluator = self.lib.mkPolicyEvaluator prev;
+          mkPolicyEvaluator = self.lib.mkPolicyEvaluator final;
         };
       };
     };
