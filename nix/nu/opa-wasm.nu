@@ -27,6 +27,9 @@ log $"Untarring ($tarball)"
 log "Tar output:"
 tar xvzf $tarball
 
+log "Reducing Wasm binary size using wasm-opt"
+wasm-opt $wasmOutput --output $wasmOutput
+
 log $"Making output directory (bl $out)"
 
 mkdir $outLib

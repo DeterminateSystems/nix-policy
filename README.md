@@ -16,12 +16,12 @@ You can run the default example for the [`rbac.rego`](./examples/rbac.rego):
 # Generate a Wasm binary from an OPA policy
 nix build --print-build-logs
 
-./result/bin/rbac-verify \
+./result/bin/rbac-eval \
   --input '{"password":"opensesame"}' \
   --data '{"expected":"opensesame"}'
 # [{"result":true}]
 
-./result/bin/rbac-verify \
+./result/bin/rbac-eval \
   --input '{"password":"somethingelse"}' \
   --data '{"expected":"opensesame"}'
 # [{"result":false}]

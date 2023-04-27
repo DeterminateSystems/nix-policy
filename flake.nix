@@ -67,14 +67,14 @@
         default = rbac;
 
         rbac = pkgs.mkPolicyEvaluator {
-          name = "rbac-verify";
+          name = "rbac-eval";
           src = ./.;
           policy = ./examples/rbac.rego;
           entrypoint = "rbac";
         };
 
         tfstate = pkgs.mkPolicyEvaluator {
-          name = "tfstate-verify";
+          name = "tfstate-eval";
           src = ./.;
           policy = ./examples/tfstate.rego;
           entrypoint = "tfstate";

@@ -24,7 +24,7 @@ let
   policyDrv = pkgs.nuenv.mkDerivation {
     name = "${name}-policy";
     inherit entrypoint policy src;
-    packages = with pkgs; [ gnutar gzip open-policy-agent ];
+    packages = with pkgs; [ binaryen gnutar gzip open-policy-agent ];
     build = builtins.readFile ./nu/opa-wasm.nu;
   };
 in
