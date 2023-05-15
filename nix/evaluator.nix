@@ -1,5 +1,4 @@
-{ pkgs # Pinned Nixpkgs (from overlay)
-}:
+{ pkgs }: # Pinned Nixpkgs (from overlay)
 
 { name # The name of the final executable
 , src # The relative source root
