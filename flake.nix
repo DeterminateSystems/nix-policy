@@ -94,7 +94,7 @@
             def main [
               path: path = "./flake.lock", # The flake.lock file to check (default: "./flake.lock")
             ] {
-              let res = (${self.packages.${system}.check-flake}/bin/flake-checker --input-path $path)
+              let res = (${self.packages.${system}.check-flake}/bin/check-flake --input-path $path)
               let deny = ($res | from json | get 0.result.deny)
 
               let numProblems = ($deny | length)
