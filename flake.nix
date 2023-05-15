@@ -14,11 +14,7 @@
   };
 
   outputs =
-    { self
-    , nixpkgs
-    , nuenv
-    , rust-overlay
-    }:
+    { self, ... }@inputs:
 
     let
       systems = [
@@ -29,14 +25,14 @@
       ];
 
       overlays = [
-        rust-overlay.overlays.rust-overlay # Provide rust-bin attribute
+        inputs.rust-overlay.overlays.rust-overlay # Provide rust-bin attribute
         self.overlays.default # Provide rustToolchain and mkPolicyEvaluator attributes
-        nuenv.overlays.nuenv # Provide the nuenv attribute (for nuenv.mkDerivation)
+        inputs.nuenv.overlays.nuenv # Provide the nuenv attribute (for nuenv.mkDerivation)
       ];
 
-      forAllSystems = f: nixpkgs.lib.genAttrs systems (system: f {
+      forAllSystems = f: inputs.nixpkgs.lib.genAttrs systems (system: f {
         inherit system;
-        pkgs = import nixpkgs {
+        pkgs = import inputs.nixpkgs {
           inherit overlays system;
         };
       });
