@@ -95,12 +95,12 @@
 
               let numProblems = ($deny | length)
               if $numProblems == 0 {
-                $"(ansi green)SUCCESS(ansi reset)"
+                print $"(ansi green)SUCCESS(ansi reset)"
               } else {
-                $"(ansi red)ERROR(ansi reset): (ansi blue)($numProblems)(ansi reset) problems were encountered"
+                print $"(ansi red)ERROR(ansi reset): (ansi blue)($numProblems)(ansi reset) problems were encountered"
 
                 for issue in $deny {
-                  {problem: $issue.problem, severity: $issue.severity}
+                  print {problem: $issue.problem, severity: $issue.severity}
                 }
               }
             }
