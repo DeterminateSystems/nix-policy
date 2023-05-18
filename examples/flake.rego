@@ -16,6 +16,17 @@ deny[format(rego.metadata.rule())] {
     not ref in allowed
 }
 
+# METADATA
+# title: Non-official Nixpkgs used
+# description: You must use the Nixpkgs in nixos/nixpkgs
+# custom:
+#   severity: FATAL
+deny[format(rego.metadata.rule())] {
+    has_key(flake_lock.nodes, "nixpkgs")
+    owner := flake_lock.nodes.nixpkgs.original.owner
+    owner != "NixOS"
+}
+
 has_key(obj, k) { _ = obj[k] }
 
 format(meta) := {
