@@ -97,7 +97,7 @@
               if $numProblems == 0 {
                 print $"(ansi green)SUCCESS(ansi reset)"
               } else {
-                print $"(ansi red)ERROR(ansi reset): (ansi blue)($numProblems)(ansi reset) problems were encountered"
+                print $"(ansi red)ERROR(ansi reset): (ansi blue)($numProblems)(ansi reset) problem(if $numProblems > 0 { "s" })) were encountered"
 
                 for issue in $deny {
                   print {problem: $issue.problem, severity: $issue.severity}
