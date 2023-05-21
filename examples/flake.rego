@@ -10,8 +10,6 @@ has_key(obj, k) {
 	_ = obj[k]
 }
 
-is_nixpkgs(name) := startswith(name, "nixpkgs")
-
 # Deny flake.lock files with a Git ref that's not included in the provided data.json
 deny[{
 	"issue": "disallowed-nixpkgs-ref",
