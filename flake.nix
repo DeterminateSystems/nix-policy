@@ -79,7 +79,7 @@
           name = "check-flake";
           src = ./.;
           policy = ./examples/flake.rego;
-          entrypoint = "flake";
+          entrypoint = "flake/deny";
         };
 
         # A Nushell script wrapping the check-flake package
@@ -91,13 +91,13 @@
               path: path = "./flake.lock", # The flake.lock file to check (default: "./flake.lock")
             ] {
               let res = (
-                exec ${self.packages.${system}.check-flake}/bin/check-flake
+                ${self.packages.${system}.check-flake}/bin/check-flake
                   --input-path $path
                   --data-path ${./examples/flake.json}
               )
-              let deny = ($res | from json | get 0.result.deny)
+              let result = ($res | from json | get 0.result)
 
-              let numProblems = ($deny | length)
+              let numProblems = ($result | length)
               if $numProblems == 0 {
                 print $"(ansi green)SUCCESS(ansi reset)"
               } else {
@@ -105,8 +105,14 @@
                 let was = (if $numProblems > 1 { "were" } else { "was" })
                 print $"(ansi red)ERROR(ansi reset): (ansi blue)($numProblems)(ansi reset) ($problem) ($was) encountered"
 
-                for issue in $deny {
-                  print $issue.detail
+                for problem in $result {
+                  if $problem.issue == "disallowed-nixpkgs-ref" {
+                    print $"> Disallowed Git ref for Nixpkgs: (ansi red)($problem.detail.disallowed_ref)(ansi reset)"
+                  }
+
+                  if $problem.issue == "outdated-nixpkgs-ref" {
+                    print $"> Outdated Nixpkgs dependency is (ansi red)($problem.detail.age_in_days)(ansi reset) days old while the limit is (ansi blue)($problem.detail.max_days)(ansi reset)"
+                  }
                 }
               }
             }
