@@ -19,8 +19,9 @@ deny[{
 		"disallowed_ref": ref,
 	},
 }] {
-    has_key(flake_lock.nodes, "nixpkgs")
-    nixpkgs := flake_lock.nodes.nixpkgs
+    has_key(flake_lock.nodes.root.inputs, "nixpkgs")
+    nixpkgs_root := flake_lock.nodes.root.inputs.nixpkgs
+    nixpkgs := flake_lock.nodes[nixpkgs_root]
 	has_key(nixpkgs.original, "ref")
 	ref := nixpkgs.original.ref
 	not ref in allowed_refs
@@ -34,8 +35,9 @@ deny[{
 		"max_days": data.max_days,
 	},
 }] {
-    has_key(flake_lock.nodes, "nixpkgs")
-    nixpkgs := flake_lock.nodes.nixpkgs
+    has_key(flake_lock.nodes.root.inputs, "nixpkgs")
+    nixpkgs_root := flake_lock.nodes.root.inputs.nixpkgs
+    nixpkgs := flake_lock.nodes[nixpkgs_root]
 	last_mod := nixpkgs.locked.lastModified
 	age := (time.now_ns() / 1000000000) - last_mod
 	secs_per_max_period := max_days * ((24 * 60) * 60)
