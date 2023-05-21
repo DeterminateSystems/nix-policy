@@ -90,17 +90,23 @@
             def main [
               path: path = "./flake.lock", # The flake.lock file to check (default: "./flake.lock")
             ] {
-              let res = (${self.packages.${system}.check-flake}/bin/check-flake --input-path $path)
+              let res = (
+                exec ${self.packages.${system}.check-flake}/bin/check-flake
+                  --input-path $path
+                  --data-path ${./examples/flake.json}
+              )
               let deny = ($res | from json | get 0.result.deny)
 
               let numProblems = ($deny | length)
               if $numProblems == 0 {
                 print $"(ansi green)SUCCESS(ansi reset)"
               } else {
-                print $"(ansi red)ERROR(ansi reset): (ansi blue)($numProblems)(ansi reset) problem(if $numProblems > 0 { "s" })) were encountered"
+                let problem = $"problem(if $numProblems > 1 { "s" })"
+                let was = (if $numProblems > 1 { "were" } else { "was" })
+                print $"(ansi red)ERROR(ansi reset): (ansi blue)($numProblems)(ansi reset) ($problem) ($was) encountered"
 
                 for issue in $deny {
-                  print {problem: $issue.problem, severity: $issue.severity}
+                  print $issue.detail
                 }
               }
             }

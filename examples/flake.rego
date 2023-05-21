@@ -1,35 +1,43 @@
 package flake
 
-import input as flake_lock
+import data.allowed_refs as allowed_refs
+import data.max_days as max_days
 import future.keywords.in
+import input as flake_lock
 
-# METADATA
-# title: Incorrect version of Nixpkgs used
-# description: You must pin to Nixpkgs with Git ref nixos-22.05 or nixos-22.11
-# custom:
-#   severity: FATAL
-deny[format(rego.metadata.rule())] {
-    has_key(flake_lock.nodes, "nixpkgs")
-    has_key(flake_lock.nodes.nixpkgs.original, "ref")
-    ref := flake_lock.nodes.nixpkgs.original.ref
-    allowed := ["nixos-22.05", "nixos-22.11"]
-    not ref in allowed
+# Constants and helper functions
+has_key(obj, k) {
+	_ = obj[k]
 }
 
-# METADATA
-# title: Non-official Nixpkgs used
-# description: You must use the Nixpkgs in nixos/nixpkgs
-# custom:
-#   severity: FATAL
-deny[format(rego.metadata.rule())] {
+is_nixpkgs(name) := startswith(name, "nixpkgs")
+
+# Deny flake.lock files with a Git ref that's not included in the provided data.json
+deny[{
+	"issue": "disallowed-nixpkgs-ref",
+	"detail": {
+		"disallowed_ref": ref,
+	},
+}] {
     has_key(flake_lock.nodes, "nixpkgs")
-    owner := flake_lock.nodes.nixpkgs.original.owner
-    owner != "NixOS"
+    nixpkgs := flake_lock.nodes.nixpkgs
+	has_key(nixpkgs.original, "ref")
+	ref := nixpkgs.original.ref
+	not ref in allowed_refs
 }
 
-has_key(obj, k) { _ = obj[k] }
-
-format(meta) := {
-    "problem": meta.description,
-    "severity": meta.custom.severity
+# Deny flake.lock files where any Nixpkgs was last updated more than 30 days ago
+deny[{
+	"issue": "outdated-nixpkgs-ref",
+	"detail": {
+		"age_in_days": floor(age / ((24 * 60) * 60)),
+		"max_days": data.max_days,
+	},
+}] {
+    has_key(flake_lock.nodes, "nixpkgs")
+    nixpkgs := flake_lock.nodes.nixpkgs
+	last_mod := nixpkgs.locked.lastModified
+	age := (time.now_ns() / 1000000000) - last_mod
+	secs_per_max_period := max_days * ((24 * 60) * 60)
+	age > secs_per_max_period
 }
