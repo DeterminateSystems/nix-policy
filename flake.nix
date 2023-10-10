@@ -2,9 +2,9 @@
   description = "Applying Open Policy Agent policies to Nix";
 
   inputs = {
-    nixpkgs.url = "github:NixOS/nixpkgs";
+    nixpkgs.url = "https://flakehub.com/f/NixOS/nixpkgs/0.2305.491476.tar.gz";
     nuenv = {
-      url = "github:DeterminateSystems/nuenv";
+      url = "https://flakehub.com/f/DeterminateSystems/nuenv/0.1.160.tar.gz";
       inputs.nixpkgs.follows = "nixpkgs";
     };
     rust-overlay = {
