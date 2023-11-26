@@ -7,7 +7,7 @@ on:
       - main
 
 jobs:
-  build:
+  check-and-build:
     strategy:
       matrix:
         os: [ubuntu-22.04, macos-12]
@@ -22,14 +22,17 @@ jobs:
         with:
           fail-mode: true
 
-      - uses: DeterminateSystems/magic-nix-cache-action@main
+      - uses: DeterminateSystems/nix-installer-action@main
 
-      - name: Set up Nix environment
-        run: |
-          nix develop ".#ci" --command direnv allow
-          eval "$(nix develop ".#ci" --command direnv export bash)"
-          echo "$PATH" >> $GITHUB_PATH
+      - uses: DeterminateSystems/magic-nix-cache-action@main
 
       - name: Nix checks
         run: |
           nix flake check --all-systems
+
+      - name: Nix build
+        run: |
+          nix build .#check-flake
+          nix build .#flake-checker
+          nix build .#rbac-eval
+          nix build .#tfstate-eval
