@@ -2,9 +2,9 @@
   description = "Applying Open Policy Agent policies to Nix";
 
   inputs = {
-    nixpkgs.url = "https://flakehub.com/f/NixOS/nixpkgs/0.2305.491476.tar.gz";
+    nixpkgs.url = "https://flakehub.com/f/NixOS/nixpkgs/0.2305.*.tar.gz";
     nuenv = {
-      url = "https://flakehub.com/f/DeterminateSystems/nuenv/0.1.160.tar.gz";
+      url = "https://flakehub.com/f/DeterminateSystems/nuenv/0.1.*.tar.gz";
       inputs.nixpkgs.follows = "nixpkgs";
     };
     rust-overlay = {
@@ -52,7 +52,6 @@
         ci = pkgs.mkShell {
           name = "nix-policy-ci";
           packages = with pkgs; [
-            cachix
             direnv
           ];
         };

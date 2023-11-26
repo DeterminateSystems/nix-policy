@@ -36,15 +36,16 @@
     },
     "nixpkgs": {
       "locked": {
-        "narHash": "sha256-q26Qv4DQ+h6IeozF2o1secyQG0jt2VUT3V0K58jr3pg=",
-        "rev": "5a237aecb57296f67276ac9ab296a41c23981f56",
-        "revCount": 491476,
+        "lastModified": 1700851152,
+        "narHash": "sha256-3PWITNJZyA3jz5IGREJRfSykM6xSLmD8u5A3WpBCyDM=",
+        "rev": "1216a5ba22a93a4a3a3bfdb4bff0f4727c576fcc",
+        "revCount": 492333,
         "type": "tarball",
-        "url": "https://api.flakehub.com/f/pinned/NixOS/nixpkgs/0.2305.491476%2Brev-5a237aecb57296f67276ac9ab296a41c23981f56/018b0dc8-d6ff-74ba-a370-df64e0732e35/source.tar.gz"
+        "url": "https://api.flakehub.com/f/pinned/NixOS/nixpkgs/0.2305.492333%2Brev-1216a5ba22a93a4a3a3bfdb4bff0f4727c576fcc/018c062f-228c-717f-a68e-3d68efbfa794/source.tar.gz"
       },
       "original": {
         "type": "tarball",
-        "url": "https://flakehub.com/f/NixOS/nixpkgs/0.2305.491476.tar.gz"
+        "url": "https://flakehub.com/f/NixOS/nixpkgs/0.2305.%2A.tar.gz"
       }
     },
     "nuenv": {
@@ -55,6 +56,7 @@
         "rust-overlay": "rust-overlay"
       },
       "locked": {
+        "lastModified": 1,
         "narHash": "sha256-NF5mgnHDy8UXkbYamrxzs6e/VYaOgYDxRPdB8eTIY+w=",
         "rev": "9beb9b3a8c245d56c7882da1c0d443202e96e47c",
         "revCount": 160,
@@ -63,7 +65,7 @@
       },
       "original": {
         "type": "tarball",
-        "url": "https://flakehub.com/f/DeterminateSystems/nuenv/0.1.160.tar.gz"
+        "url": "https://flakehub.com/f/DeterminateSystems/nuenv/0.1.%2A.tar.gz"
       }
     },
     "root": {
@@ -82,10 +84,10 @@
         ]
       },
       "locked": {
-        "narHash": "sha256-Ir5FaBvhBtZ5OGZ3g9rgy4twUcEnyuGEz4QLmxAn9FE=",
+        "narHash": "sha256-QwVeE9YTgH3LmL7yw2V/hgswL6yorIvYSp4YGI8lZYM=",
         "owner": "oxalica",
         "repo": "rust-overlay",
-        "rev": "358d7155300cd64357f9afd14aa3383c2323e5fc",
+        "rev": "99df4908445be37ddb2d332580365fce512a7dcf",
         "type": "github"
       },
       "original": {
@@ -102,10 +104,10 @@
         ]
       },
       "locked": {
-        "narHash": "sha256-P3X8iSAu12z+UFxquuntZnR8sXjKwgYHf0wTzgO8I7M=",
+        "narHash": "sha256-vprUv4maYeo0zW5uyEznXsv6DXwE+lLk4dcyOz6rVBI=",
         "owner": "oxalica",
         "repo": "rust-overlay",
-        "rev": "317c523c09218f27f1da1ec0d06bbd2cbc0c1939",
+        "rev": "ee42d1bf90ceed1b1d2e4b79f947f7513f3a3506",
         "type": "github"
       },
       "original": {

@@ -22,13 +22,6 @@ jobs:
         with:
           fail-mode: true
 
-      - uses: DeterminateSystems/nix-installer-action@main
-        with:
-          extra-conf: |
-            binary-caches = https://cache.nixos.org https://${{ secrets.CACHIX_CACHE }}.cachix.org
-            trusted-public-keys = cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY= ${{ secrets.CACHIX_TRUSTED_PUBLIC_KEY }}
-            trusted-substituters = https://cache.nixos.org https://${{ secrets.CACHIX_CACHE }}.cachix.org
-
       - uses: DeterminateSystems/magic-nix-cache-action@main
 
       - name: Set up Nix environment
@@ -37,23 +30,6 @@ jobs:
           eval "$(nix develop ".#ci" --command direnv export bash)"
           echo "$PATH" >> $GITHUB_PATH
 
-      - name: Binary cache setup
+      - name: Nix checks
         run: |
-          cachix authtoken ${{ secrets.CACHIX_AUTH_TOKEN }}
-          cachix use ${{ secrets.CACHIX_CACHE }}
-
-      - name: nix flake check
-        run: nix flake check
-
-      # TODO: more specific tests
-
-      - name: Cache development environment
-        run: |
-          nix develop ".#ci" --profile nuenv-ci-profile
-          cachix push ${{ secrets.CACHIX_CACHE }} nuenv-ci-profile
-
-      - name: Cache build artifacts
-        run: |
-          nix flake archive --json \
-            | jq -r '.path,(.inputs|to_entries[].value.path)' \
-            | cachix push "${{ secrets.CACHIX_CACHE }}"
+          nix flake check --all-systems
