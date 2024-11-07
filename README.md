@@ -1,5 +1,9 @@
 # Policy-driven Nix
 
+> [!INFO]
+> This repo was created as a complement to the [Packaging Open Policy Agent policies with Nix][blog-post] blog post on the [Determinate Systems blog][blog] and fulfilled its purpose.
+> It won't be updated further but you're free to use it [as you see fit](./LICENSE)!
+
 An experiment using [Nix] with [Open Policy Agent][opa] (OPA).
 
 ## How it works
@@ -101,6 +105,8 @@ nix build
   --data-path policy-data.json
 ```
 
+[blog]: https://determinate.systems/posts
+[blog-post]: https://determinate.systems/posts/open-policy-agent
 [bundle]: https://www.openpolicyagent.org/docs/latest/management-bundles/#bundle-file-format
 [lib]: https://github.com/matrix-org/rust-opa-wasm
 [matrix]: https://github.com/matrix-org
